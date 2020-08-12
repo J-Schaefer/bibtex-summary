@@ -87,7 +87,8 @@ def write_output(title, year, authorlist, abstract, pdf_file, out_dir):
     file_write.write('\n')
     file_write.write(abstract + '\n')
 
-    copyfile(pdf_file, path + '.pdf')
+    if os.path.exists(pdf_file):
+        copyfile(pdf_file, path + '.pdf')
     file_write.close()
 
 
