@@ -6,6 +6,39 @@ import optparse
 import re
 
 
+def main():
+    parser = optparse.OptionParser("usage: %prog [options]")
+    parser.add_option(
+        "-f",
+        "--filename",
+        dest="filename",
+        default="",
+        type="string",
+        help="Filename of input Bib file.")
+
+    (options, args) = parser.parse_args(sys.argv[1:])
+
+    file_read = open(options.filename)
+
+    entries = []
+    entries.append([])
+    counter = 0
+
+    for line in file_read:
+        line = re.sub(',\n', '', line)
+        line = re.sub('\n', '', line)
+        if line <> "}":
+            entries[counter].append(line)
+        else:
+            entries[counter].pop(0)
+            parse_entry(entries[counter])
+            entries.append([])
+            counter += 1
+
+    # print(counter)
+    # print(entries[1])
+
+
 def write(filename, title, year, authorlist, abstract):
     file_write = open(filename, "a")
     file_write.write("# Summary of " + title)
@@ -30,33 +63,5 @@ def parse_entry(entry):
             print author
 
 
-parser = optparse.OptionParser("usage: %prog [options]")
-parser.add_option(
-    "-f",
-    "--filename",
-    dest="filename",
-    default="",
-    type="string",
-    help="Filename of input Bib file.")
-
-(options, args) = parser.parse_args(sys.argv[1:])
-
-file_read = open(options.filename)
-
-entries = []
-entries.append([])
-counter = 0
-
-for line in file_read:
-    line = re.sub(',\n', '', line)
-    line = re.sub('\n', '', line)
-    if line <> "}":
-        entries[counter].append(line)
-    else:
-        entries[counter].pop(0)
-        parse_entry(entries[counter])
-        entries.append([])
-        counter += 1
-
-# print(counter)
-# print(entries[1])
+if __name__ == '__main__':
+    main()
