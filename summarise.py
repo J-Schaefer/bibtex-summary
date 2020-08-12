@@ -4,17 +4,18 @@ import os
 import sys
 import optparse
 import re
+from shutil import copyfile
 
 
 def main():
-    parser = optparse.OptionParser("usage: %prog [options]")
+    parser = optparse.OptionParser('usage: %prog [options]')
     parser.add_option(
-        "-f",
-        "--filename",
-        dest="filename",
-        default="",
-        type="string",
-        help="Filename of input Bib file.")
+        '-f',
+        '--filename',
+        dest='filename',
+        default='',
+        type='string',
+        help='Filename of input Bib file.')
 
     (options, args) = parser.parse_args(sys.argv[1:])
 
@@ -27,11 +28,12 @@ def main():
     for line in file_read:
         line = re.sub(',\n', '', line)
         line = re.sub('\n', '', line)
-        if line <> "}":
+        if line != '}':  # not end of entry, continue
             entries[counter].append(line)
-        else:
+        else:  # end of entry reached, parse
             entries[counter].pop(0)
-            parse_entry(entries[counter])
+            title, author, year, pdf_file = parse_entry(entries[counter])
+            write_output
             entries.append([])
             counter += 1
 
@@ -39,15 +41,16 @@ def main():
     # print(entries[1])
 
 
-def write(filename, title, year, authorlist, abstract):
-    file_write = open(filename, "a")
-    file_write.write("# Summary of " + title)
-    file_write.write("## General Info")
-    file_write.write("Title: " + title)
-    file_write.write("Authors: " + authorlist)
-    file_write.write("Year: " + year)
-    file_write.write()
-    file_write.write("## Abstract ")
+def write_output(title, year, authorlist, abstract, pdf_file):
+    filename = ''
+    file_write = open(filename, 'w')
+    file_write.write('# Summary of ' + title)
+    file_write.write('## General Info')
+    file_write.write('Title: ' + title)
+    file_write.write('Authors: ' + authorlist)
+    file_write.write('Year: ' + year)
+    file_write.write('\n')
+    file_write.write('## Abstract ')
     file_write.write(abstract)
 
 
