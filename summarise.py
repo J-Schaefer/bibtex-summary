@@ -17,6 +17,13 @@ def main():
         default='',
         type='string',
         help='Filename of input Bib file.')
+    parser.add_option(
+        '-o',
+        '--outdir',
+        dest='outdir',
+        default='out',
+        type='string',
+        help='Directory name for output.')
 
     (options, args) = parser.parse_args(sys.argv[1:])
 
@@ -40,7 +47,8 @@ def main():
                          year=year,
                          authorlist=authorlist,
                          abstract=abstract,
-                         pdf_file=pdf_file)
+                         pdf_file=pdf_file,
+                         out_dir=options.outdir)
             entries.append([])
             counter += 1
 
@@ -48,17 +56,16 @@ def main():
     # print(entries[1])
 
 
-def write_output(title, year, authorlist, abstract, pdf_file):
-    directory = 'out/'
+def write_output(title, year, authorlist, abstract, pdf_file, out_dir):
     if len(authorlist) <= 1:
         filename = authorlist[0][0] + ' - ' + year + ' - ' + title
     else:
         filename = authorlist[0][0] + ' et al ' + ' - ' + year + ' - ' + title
 
-    path = directory + clean_string(filename)
+    path = out_dir + '/' + clean_string(filename)
 
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
 
     file_write = open(path + '.md', 'w')
     file_write.write('# Summary of ' + title + '\n')
@@ -97,6 +104,7 @@ def clean_string(string):
 
 def parse_entry(entry):
     title = ''
+    authorlist = ''
     year = ''
     pdf_file = ''
     abstract = ''
@@ -137,6 +145,7 @@ def parse_entry(entry):
                 print pdf_file
 
     return title, authorlist, year, abstract, pdf_file
+
 
 if __name__ == '__main__':
     main()

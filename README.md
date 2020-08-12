@@ -22,6 +22,8 @@ If you need help just type
 python summarise.py -h
 ```
 
+Another useful option is `-o` to define the output directory.
+
 ## Author
 
 Jeroen Schäfer - [jeroen.schaefer@outlook.de](mailto:jeroen.schaefer@outlook.de)
