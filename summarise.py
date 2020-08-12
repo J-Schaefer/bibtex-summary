@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 import os
 import sys
@@ -47,19 +48,24 @@ def main():
     # print(entries[1])
 
 
-def write_output(self, title, year, authorlist, abstract, pdf_file):
+def write_output(title, year, authorlist, abstract, pdf_file):
     directory = 'out/'
-    filename = authorlist[0][0] + ' - ' + title
+    if len(authorlist) <= 1:
+        filename = authorlist[0][0] + ' - ' + year + ' - ' + title
+    else:
+        filename = authorlist[0][0] + ' et al ' + ' - ' + year + ' - ' + title
 
-    path = directory + filename
+    path = directory + clean_string(filename)
 
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    file_write = open(filename + '.md', 'w')
-    file_write.write('# Summary of ' + title)
-    file_write.write('## General Info')
-    file_write.write('Title: ' + title)
+    file_write = open(path + '.md', 'w')
+    file_write.write('# Summary of ' + title + '\n')
+    file_write.write('\n')
+    file_write.write('## General Info' + '\n')
+    file_write.write('\n')
+    file_write.write('Title: ' + title + '\n')
     authors = ''
     for author in authorlist:
         if len(author) == 2:
@@ -67,12 +73,26 @@ def write_output(self, title, year, authorlist, abstract, pdf_file):
         else:
             authors += author[0]
 
-    file_write.write('Authors: ' + authors)
-    file_write.write('Year: ' + year)
+    file_write.write('Authors: ' + authors + '\n')
+    file_write.write('Year: ' + year + '\n')
     file_write.write('\n')
-    file_write.write('## Abstract ')
-    file_write.write(abstract)
-    copyfile(pdf_file, filename + '.pdf')
+    file_write.write('## Abstract' + '\n')
+    file_write.write('\n')
+    file_write.write(abstract + '\n')
+
+    copyfile(pdf_file, path + '.pdf')
+    file_write.close()
+
+
+def clean_string(string):
+    string = re.sub('Ä', 'Ae', string)
+    string = re.sub('ä', 'ae', string)
+    string = re.sub('Ö', 'Oe', string)
+    string = re.sub('ö', 'oe', string)
+    string = re.sub('Ü', 'Ue', string)
+    string = re.sub('Ü', 'ue', string)
+    string = re.sub('ß', 'ss', string)
+    return string
 
 
 def parse_entry(entry):
