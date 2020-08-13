@@ -9,6 +9,10 @@ from shutil import copyfile
 
 
 def main():
+    """
+    Main function to control the process.
+    :return: None
+    """
     parser = optparse.OptionParser('usage: %prog [options]')
     parser.add_option(
         '-f',
@@ -53,7 +57,28 @@ def main():
             counter += 1
 
 
-def write_output(title, year, authorlist, abstract, pdf_file, out_dir):
+def write_output(out_dir, title='', year='', authorlist='', abstract='', pdf_file=''):
+    """
+    Writes all the given parameters in an output Markdown file. The
+    format is chosen according the standards of Markdown. All options
+    except for the out_dir are optional because their availability
+    cannot be ensured.
+    :param out_dir: Path of the output directory (where the PDFs and
+           Markdown files are put)
+    :type out_dir: string
+    :param title: Title of the bib entry
+    :type title: string
+    :param year: year of publishing
+    :type year: string
+    :param authorlist: List of authors with format:
+           [[lastname1, firstname1], [lastname2, firstname2]...]
+    :type authorlist: list of strings
+    :param abstract: Abstract of the publication
+    :type abstract: string
+    :param pdf_file: Absolute of the associated PDF.
+    :type pdf_file: string
+    :return: None
+    """
     if len(authorlist) <= 1:
         filename = authorlist[0][0] + ' - ' + year + ' - ' + title
     else:
@@ -64,12 +89,15 @@ def write_output(title, year, authorlist, abstract, pdf_file, out_dir):
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
 
-    file_write = open(path + '.md', 'w')
-    file_write.write('# Summary of ' + title + '\n')
+    file_write = open(path + '.md', 'w')  # open file
+    file_write.write('# Summary of ' + title + '\n')  # print caption
     file_write.write('\n')
-    file_write.write('## General Info' + '\n')
+    file_write.write('## General Info' + '\n')  # print sub caption
     file_write.write('\n')
-    file_write.write('Title: ' + title + '\n')
+    file_write.write('Title: ' + title + '\n')  # print title
+
+    # Concatenate authors in one string with format:
+    # firstname1 lastname1, firstname2 lastname2, ...
     authors = ''
     for author in authorlist:
         if len(author) == 2:
@@ -83,7 +111,7 @@ def write_output(title, year, authorlist, abstract, pdf_file, out_dir):
     file_write.write('Authors: ' + authors + '\n')
     file_write.write('Year: ' + year + '\n')
     file_write.write('\n')
-    file_write.write('## Abstract' + '\n')
+    file_write.write('## Abstract' + '\n')  # Print sub caption
     file_write.write('\n')
     file_write.write(abstract + '\n')
 
@@ -93,6 +121,13 @@ def write_output(title, year, authorlist, abstract, pdf_file, out_dir):
 
 
 def clean_string(string):
+    """
+    Clean a given string from Umlauts and unwanted characters to ensure
+    compatibility with the file system.
+    :param string: String that needs cleaning
+    :type string: string
+    :return: Cleaned string
+    """
     string = re.sub('Ä', 'Ae', string)
     string = re.sub('ä', 'ae', string)
     string = re.sub('Ö', 'Oe', string)
@@ -106,6 +141,13 @@ def clean_string(string):
 
 
 def parse_entry(entry):
+    """
+    Get a list of strings and extract different fields from it.
+    :param entry: String including one single entry.
+    :type entry: list of strings
+    :return: title, authorlist, year, abstract, pdf_file: Field values
+             of the bib entries.
+    """
     title = ''
     authorlist = ''
     year = ''
@@ -117,16 +159,18 @@ def parse_entry(entry):
         bib_id = re.sub('\s', '', substrings[0])
 
         if len(substrings) > 1:
-            value = substrings[1]
-            value = re.sub('{', '', value)
-            value = re.sub('}', '', value)
+            value = substrings[1]  # get value of the bib field
+            value = re.sub('{', '', value)  # remove '{'
+            value = re.sub('}', '', value)  # remove '}'
 
             if bib_id == 'title':
-                title = value
+                title = value  # set title
 
             elif bib_id == 'author':
-                authorlist = value  # list of authors separated by 'and'
-                # Split at the 'and', authors is then: lastname, firstname
+                # Get list of authors separated by 'and'
+                authorlist = value
+                # Split at the 'and', authors is then:
+                # [lastname, firstname]
                 authors = re.split('and', authorlist)
                 authorlist = []  # rewrite authorlist as empty list
                 for author in authors:
@@ -141,14 +185,20 @@ def parse_entry(entry):
                     authorlist.append(author)
 
             elif bib_id == 'date' or bib_id == 'year':
+                # Get year from the date/year field
                 year = value.split('-')[0]
 
             elif bib_id == 'abstract':
-                abstract = value
+                abstract = value  # get abstract
+
             elif bib_id == 'file':
-                files = value[1:]
+                # Remove first character (space) from the path
+                if value[0] == ' ':
+                    files = value[1:]
+                # Split multiple filenames
                 filelist = re.split(';', files)
                 for filesingle in filelist:
+                    # Get the path of the pdf
                     if '.pdf' in filesingle:
                         pdf_file = filesingle
 
