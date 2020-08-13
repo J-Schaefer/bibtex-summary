@@ -52,9 +52,6 @@ def main():
             entries.append([])
             counter += 1
 
-    # print(counter)
-    # print(entries[1])
-
 
 def write_output(title, year, authorlist, abstract, pdf_file, out_dir):
     if len(authorlist) <= 1:
@@ -120,10 +117,10 @@ def parse_entry(entry):
             value = substrings[1]
             value = re.sub('{', '', value)
             value = re.sub('}', '', value)
-            # print id
+
             if bib_id == 'title':
                 title = value
-                # print title
+
             elif bib_id == 'author':
                 authorlist = value  # list of authors separated by 'and'
                 # Split at the 'and', authors is then: lastname, firstname
@@ -133,12 +130,10 @@ def parse_entry(entry):
                     author = re.sub(' ', '', author)
                     author = re.split(',', author)
                     authorlist.append(author)
-                # print authorlist
-            elif bib_id == 'date':
 
             elif bib_id == 'date' or bib_id == 'year':
                 year = value.split('-')[0]
-                # print year
+
             elif bib_id == 'abstract':
                 abstract = value
             elif bib_id == 'file':
@@ -147,7 +142,6 @@ def parse_entry(entry):
                 for filesingle in filelist:
                     if '.pdf' in filesingle:
                         pdf_file = filesingle
-                print pdf_file
 
     return title, authorlist, year, abstract, pdf_file
 
