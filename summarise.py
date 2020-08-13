@@ -100,6 +100,8 @@ def clean_string(string):
     string = re.sub('Ü', 'Ue', string)
     string = re.sub('Ü', 'ue', string)
     string = re.sub('ß', 'ss', string)
+    # Avoid slashes in names because they represent sub-dirs
+    string = re.sub('/', ' ', string)
     return string
 
 
