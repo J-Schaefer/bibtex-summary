@@ -180,7 +180,6 @@ def parse_entry(entry):
                     if len(author) > 1:
                         author[0] = author[0].strip()  # remove spaces
                         author[1] = author[1].strip()  # remove spaces
-                    print author
                     # Append the author to the authorlist
                     authorlist.append(author)
 
