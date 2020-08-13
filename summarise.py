@@ -135,6 +135,8 @@ def parse_entry(entry):
                     authorlist.append(author)
                 # print authorlist
             elif bib_id == 'date':
+
+            elif bib_id == 'date' or bib_id == 'year':
                 year = value.split('-')[0]
                 # print year
             elif bib_id == 'abstract':
