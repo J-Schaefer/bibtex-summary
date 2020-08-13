@@ -73,9 +73,12 @@ def write_output(title, year, authorlist, abstract, pdf_file, out_dir):
     authors = ''
     for author in authorlist:
         if len(author) == 2:
-            authors += author[1] + author[0]
+            authors += author[1] + ' ' + author[0]
         else:
             authors += author[0]
+
+        if author != authorlist[-1]:
+            authors += ', '
 
     file_write.write('Authors: ' + authors + '\n')
     file_write.write('Year: ' + year + '\n')
@@ -127,8 +130,14 @@ def parse_entry(entry):
                 authors = re.split('and', authorlist)
                 authorlist = []  # rewrite authorlist as empty list
                 for author in authors:
-                    author = re.sub(' ', '', author)
+                    # Split author at first and last name and remove
+                    # leading and trailing whitespaces
                     author = re.split(',', author)
+                    if len(author) > 1:
+                        author[0] = author[0].strip()  # remove spaces
+                        author[1] = author[1].strip()  # remove spaces
+                    print author
+                    # Append the author to the authorlist
                     authorlist.append(author)
 
             elif bib_id == 'date' or bib_id == 'year':
