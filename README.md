@@ -23,6 +23,8 @@ python summarise.py -h
 ```
 
 Another useful option is `-o` to define the output directory.
+To make sure the PDF file gets found make sure you're using the `file`
+provided by BibTeX.
 
 ## Author
 
