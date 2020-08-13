@@ -112,7 +112,7 @@ def parse_entry(entry):
 
     for line in entry:
         substrings = re.split('=', line)
-        bib_id = re.sub(' ', '', substrings[0])
+        bib_id = re.sub('\s', '', substrings[0])
 
         if len(substrings) > 1:
             value = substrings[1]
